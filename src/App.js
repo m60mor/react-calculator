@@ -9,7 +9,7 @@ function App() {
       <div className='output-current'>5325,7</div>
     </div>
     <div className='buttons-grid'>
-      <button>C</button>
+      <button className='red'>C</button>
       <button>&#8592;</button>
       <button>&#8730;</button>
       <button>&divide;</button>
@@ -27,12 +27,12 @@ function App() {
       <button>7</button>
       <button>8</button>
       <button>9</button>
-      <button>+</button>
+      <button className='green'>+</button>
 
       <button>&#177;</button>
       <button>0</button>
       <button>,</button>
-      <button>=</button>
+      <button className='blue'>=</button>
     </div>
   </div>
   );
