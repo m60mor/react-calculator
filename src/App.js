@@ -1,5 +1,7 @@
 import React, { useState, useReducer } from 'react';
 import './styles.css';
+import { paste } from '@testing-library/user-event/dist/paste';
+import { type } from '@testing-library/user-event/dist/type';
 
 function App() {
   // const[prevNumber, setPrevNumber] = useState(() => {return null});
@@ -17,12 +19,19 @@ function App() {
     SELECT_NUMBER: "select-number",
     REMOVE_NUMBER: "remove-number",
     OPERATION_SELECTED: "operation-selected",
+    ROOT: 'root',
     CHANGE_SIGN: "change-sign",
     COMMA: "comma"
   }
   
   const calcReducer = (state, action) => {
     switch(action.type) {
+      case ACTIONS.CLEAR:
+        return {
+          number: '0',
+          prevNumber: null,
+          operation: null
+        }
       case ACTIONS.SELECT_NUMBER:
         if (state.number !== '0') {
           return {
@@ -33,6 +42,17 @@ function App() {
         return {
           ...state,
           number: action.payload      
+        }
+      case ACTIONS.REMOVE_NUMBER:
+        if (state.number.replace('.', '').length <= 1){
+          return {
+            ...state,
+            number: '0'
+          }
+        }
+        return {
+          ...state,
+          number: state.number.slice(0, -1)
         }
       case ACTIONS.OPERATION_SELECTED:
         if (state.operation === null) {
@@ -46,54 +66,35 @@ function App() {
           ...state,
           operation: action.payload
         }
-      }
+      case ACTIONS.ROOT:
+        if (parseFloat(state.number) >= 0) {
+          return {
+            number: String(Math.sqrt(parseFloat(state.number)))
+          }
+        }
+        return {
+          number: '0',
+          prevNumber: 'Error, cant get root of negative numbers'
+        }
+      case ACTIONS.CHANGE_SIGN:
+        if (state.number !== '0') {
+          return {
+            ...state,
+            number: String(-parseFloat(state.number))
+          }
+        }
+        return {
+          ...state
+        }
+      case ACTIONS.COMMA:
+        return {
+          ...state,
+          number: state.number.includes('.') ? state.number.replace('.', '') : state.number + '.'
+        }
+    }
   }
 
   const[state, dispatch] = useReducer(calcReducer, INITIAL_STATE);
-
-  // function clear() {
-  //   setNumber((prev) => '0');
-  //   setPrevNumber(null);
-  //   setOperation(null);
-  // }
-
-  // function numberSelected(x) {
-  //   if (number !== '0') {
-  //     setNumber((append) => append + x);
-  //   }
-  //   else {
-  //     setNumber(x);
-  //   }
-  // }
-
-  // function removeNumber() {
-  //   if (number.length === 1) {
-  //     setNumber('0');
-  //   }
-  //   else {
-  //     setNumber((append) => append.slice(0, -1));
-  //   }
-  // }
-
-  // function comma() {
-  //   number.includes('.') ? setNumber((append) => append.replace('.', '')) : setNumber((append) => append + '.')
-  // }
-
-  // function root() {
-  //   if (parseFloat(number) >= 0) {
-  //     setNumber((x) => (String(Math.sqrt(x))));
-  //   }
-  //   else {
-  //     setNumber('0')
-  //     setPrevNumber('Error, cant get root of negative numbers');
-  //   }
-  // }
-
-  // function changeSign() {
-  //   if (number !== '0') {
-  //     setNumber((x) => -parseFloat(x));
-  //   }
-  // }
 
   // function calculate() {
   //   console.log(prevNumber);
@@ -129,9 +130,9 @@ function App() {
       <div className='output-current'>{state.number}</div>
     </div>
     <div className='buttons-grid'>
-      <button className='red'>C</button>
-      <button>&#8592;</button>
-      <button>&#8730;</button>
+      <button className='red' onClick={() => dispatch({type: ACTIONS.CLEAR})}>C</button>
+      <button onClick={() => dispatch({type: ACTIONS.REMOVE_NUMBER})}>&#8592;</button>
+      <button onClick={() => dispatch({type: ACTIONS.ROOT})}>&#8730;</button>
       <button onClick={() => dispatch({type: ACTIONS.OPERATION_SELECTED, payload: '/'})}>&divide;</button>
 
       <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '1'})}>1</button>
@@ -149,9 +150,9 @@ function App() {
       <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '9'})}>9</button>
       <button className='green' onClick={() => dispatch({type: ACTIONS.OPERATION_SELECTED, payload: '+'})}>+</button>
 
-      <button>&#177;</button>
+      <button onClick={() =>dispatch({type: ACTIONS.CHANGE_SIGN})}>&#177;</button>
       <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '0'})}>0</button>
-      <button>,</button>
+      <button onClick={() => dispatch({type: ACTIONS.COMMA})}>,</button>
       <button className='blue'>=</button>
     </div>
   </div>
