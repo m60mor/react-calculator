@@ -90,43 +90,33 @@ function App() {
       case ACTIONS.CALCULATE:
         const x = parseFloat(state.prevNumber);
         const y = parseFloat(state.number);
-        if (state.operation === '+') {
-          return {
-            prevNumber: null,
-            operation: null,
-            number: (String(x + y))
-          }
-        }
-        else if (state.operation === '-') {
-          return {
-            prevNumber: null,
-            operation: null,
-            number: (String(x - y))
-          }
-        }
-        else if (state.operation === '*') {
-          return {
-            prevNumber: null,
-            operation: null,
-            number: (String(x * y))
-          }
-        }
-        else if (state.operation === '/') {
-          if (y === 0) {
-            return {
-              operation: null,
-              prevNumber: 'Error, division by zero',
-              number: '0'
+        let result = state.number;
+        switch(state.operation) {
+          case '+':
+            result = String(x + y)
+            break;
+          case '-':
+            result = String(x - y);
+            break;
+          case '*':
+            result = String(x * y)
+            break;
+          case '/':
+            if (y === 0) {
+              return {
+                operation: null,
+                prevNumber: 'Error, division by zero',
+                number: '0'
+              }
             }
-          }
-          return {
-            prevNumber: null,
-            operation: null,
-            number: (String(x / y))
-          }
+            result = String(x / y)
+            break
         }
+
         return {
-          ...state
+          prevNumber: null,
+          operation: null,
+          number: result
         }
     }
   }
