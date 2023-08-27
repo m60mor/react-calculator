@@ -4,10 +4,6 @@ import { paste } from '@testing-library/user-event/dist/paste';
 import { type } from '@testing-library/user-event/dist/type';
 
 function App() {
-  // const[prevNumber, setPrevNumber] = useState(() => {return null});
-  // const[operation, setOperation] = useState(() => {return null});
-  // const[number, setNumber] = useState(() => {return '0';});
-
   const INITIAL_STATE = {
     number: '0',
     prevNumber: null,
@@ -91,37 +87,51 @@ function App() {
           ...state,
           number: state.number.includes('.') ? state.number.replace('.', '') : state.number + '.'
         }
+      case ACTIONS.CALCULATE:
+        const x = parseFloat(state.prevNumber);
+        const y = parseFloat(state.number);
+        if (state.operation === '+') {
+          return {
+            prevNumber: null,
+            operation: null,
+            number: (String(x + y))
+          }
+        }
+        else if (state.operation === '-') {
+          return {
+            prevNumber: null,
+            operation: null,
+            number: (String(x - y))
+          }
+        }
+        else if (state.operation === '*') {
+          return {
+            prevNumber: null,
+            operation: null,
+            number: (String(x * y))
+          }
+        }
+        else if (state.operation === '/') {
+          if (y === 0) {
+            return {
+              operation: null,
+              prevNumber: 'Error, division by zero',
+              number: '0'
+            }
+          }
+          return {
+            prevNumber: null,
+            operation: null,
+            number: (String(x / y))
+          }
+        }
+        return {
+          ...state
+        }
     }
   }
 
   const[state, dispatch] = useReducer(calcReducer, INITIAL_STATE);
-
-  // function calculate() {
-  //   console.log(prevNumber);
-  //   console.log(number);
-  //   const x = parseFloat(prevNumber);
-  //   const y = parseFloat(number);
-  //   setPrevNumber(null)
-  //   setOperation(null)
-  //   if (operation === '+') {
-  //     setNumber(String(x + y));
-  //   }
-  //   else if (operation === '-') {
-  //     setNumber(String(x - y));
-  //   }
-  //   else if (operation === '*') {
-  //     setNumber(String(x * y));
-  //   }
-  //   else if (operation === '/') {
-  //     if (y === 0) {
-  //       setPrevNumber('Error, division by zero');
-  //       setNumber('0');
-  //     }
-  //     else {
-  //       setNumber(String(x / y)); 
-  //     }
-  //   }
-  // }
 
   return (
   <div className='calculator-container'>
@@ -153,7 +163,7 @@ function App() {
       <button onClick={() =>dispatch({type: ACTIONS.CHANGE_SIGN})}>&#177;</button>
       <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '0'})}>0</button>
       <button onClick={() => dispatch({type: ACTIONS.COMMA})}>,</button>
-      <button className='blue'>=</button>
+      <button className='blue' onClick={() => dispatch({type: ACTIONS.CALCULATE})}>=</button>
     </div>
   </div>
   );
