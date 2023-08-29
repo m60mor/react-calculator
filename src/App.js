@@ -1,25 +1,25 @@
-import React, { useState, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import './styles.css';
-import { paste } from '@testing-library/user-event/dist/paste';
-import { type } from '@testing-library/user-event/dist/type';
+import NumberButton from './NumberButton';
+import OperationButton from './OperationButton';
+
+const INITIAL_STATE = {
+  number: '0',
+  prevNumber: null,
+  operation: null,
+}
+
+export const ACTIONS = {
+  CLEAR: "clear",
+  SELECT_NUMBER: "select-number",
+  REMOVE_NUMBER: "remove-number",
+  OPERATION_SELECTED: "operation-selected",
+  ROOT: 'root',
+  CHANGE_SIGN: "change-sign",
+  COMMA: "comma"
+}
 
 function App() {
-  const INITIAL_STATE = {
-    number: '0',
-    prevNumber: null,
-    operation: null,
-  }
-  
-  const ACTIONS = {
-    CLEAR: "clear",
-    SELECT_NUMBER: "select-number",
-    REMOVE_NUMBER: "remove-number",
-    OPERATION_SELECTED: "operation-selected",
-    ROOT: 'root',
-    CHANGE_SIGN: "change-sign",
-    COMMA: "comma"
-  }
-  
   const calcReducer = (state, action) => {
     switch(action.type) {
       case ACTIONS.CLEAR:
@@ -98,10 +98,10 @@ function App() {
           case '-':
             result = String(x - y);
             break;
-          case '*':
+          case '\u00D7':
             result = String(x * y)
             break;
-          case '/':
+          case '\u00F7':
             if (y === 0) {
               return {
                 operation: null,
@@ -133,25 +133,25 @@ function App() {
       <button className='red' onClick={() => dispatch({type: ACTIONS.CLEAR})}>C</button>
       <button onClick={() => dispatch({type: ACTIONS.REMOVE_NUMBER})}>&#8592;</button>
       <button onClick={() => dispatch({type: ACTIONS.ROOT})}>&#8730;</button>
-      <button onClick={() => dispatch({type: ACTIONS.OPERATION_SELECTED, payload: '/'})}>&divide;</button>
+      <OperationButton dispatch={dispatch} operation={'\u00F7'} />
 
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '1'})}>1</button>
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '2'})}>2</button>
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '3'})}>3</button>
-      <button onClick={() => dispatch({type: ACTIONS.OPERATION_SELECTED, payload: '*'})}>&times;</button>
+      <NumberButton dispatch={dispatch} number='1' />
+      <NumberButton dispatch={dispatch} number='2' />
+      <NumberButton dispatch={dispatch} number='3' />
+      <OperationButton dispatch={dispatch} operation={'\u00D7'} />
       
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '4'})}>4</button>
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '5'})}>5</button>
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '6'})}>6</button>
-      <button onClick={() => dispatch({type: ACTIONS.OPERATION_SELECTED, payload: '-'})}>&minus;</button>
+      <NumberButton dispatch={dispatch} number='4' />
+      <NumberButton dispatch={dispatch} number='5' />
+      <NumberButton dispatch={dispatch} number='6' />
+      <OperationButton dispatch={dispatch} operation='-' />
 
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '7'})}>7</button>
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '8'})}>8</button>
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '9'})}>9</button>
-      <button className='green' onClick={() => dispatch({type: ACTIONS.OPERATION_SELECTED, payload: '+'})}>+</button>
+      <NumberButton dispatch={dispatch} number='7' />
+      <NumberButton dispatch={dispatch} number='8' />
+      <NumberButton dispatch={dispatch} number='9' />
+      <OperationButton dispatch={dispatch} operation='+' />
 
-      <button onClick={() =>dispatch({type: ACTIONS.CHANGE_SIGN})}>&#177;</button>
-      <button onClick={() => dispatch({type: ACTIONS.SELECT_NUMBER, payload: '0'})}>0</button>
+      <button onClick={() => dispatch({type: ACTIONS.CHANGE_SIGN})}>&#177;</button>
+      <NumberButton dispatch={dispatch} number='0' />
       <button onClick={() => dispatch({type: ACTIONS.COMMA})}>,</button>
       <button className='blue' onClick={() => dispatch({type: ACTIONS.CALCULATE})}>=</button>
     </div>
