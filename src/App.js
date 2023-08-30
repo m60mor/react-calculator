@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import './styles.css';
 import NumberButton from './NumberButton';
 import OperationButton from './OperationButton';
@@ -16,7 +16,8 @@ export const ACTIONS = {
   OPERATION_SELECTED: "operation-selected",
   ROOT: 'root',
   CHANGE_SIGN: "change-sign",
-  COMMA: "comma"
+  COMMA: "comma",
+  CHECK_LENGTH: "check-length"
 }
 
 function App() {
@@ -118,10 +119,25 @@ function App() {
           operation: null,
           number: result
         }
+      case ACTIONS.CHECK_LENGTH:
+        if (state.number.includes('.') || state.number.length > 12 + parseInt(state.number.includes('-'))) {
+          return {
+            ...state,
+            number: state.number.slice(0, 11)
+          }
+        }
+        return {
+          ...state
+        }
     }
   }
 
   const[state, dispatch] = useReducer(calcReducer, INITIAL_STATE);
+
+  useEffect(() => {
+    dispatch({ type: ACTIONS.CHECK_LENGTH });
+  }, [state.number]);
+
 
   return (
   <div className='calculator-container'>
