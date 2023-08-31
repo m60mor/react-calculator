@@ -13,7 +13,7 @@ body {
     display: flex;
     flex-direction: column;
     background: #222;
-    width: 300px;
+    width: 310px;
     padding: 10px;
     border: #333 1px solid;
     margin: auto;
@@ -25,15 +25,15 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: end;
     background: rgba(255, 255, 255, 0.9);
-    box-sizing: border-box;
     width: 100%;
+    box-sizing: border-box;
     padding: 5px;
     border: 1px #555 solid;
     margin: 5px 0 15px 0;
     color: #000;
     font-family: "digital7";
+    text-align: right;
 }
 
 .output-current {

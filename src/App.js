@@ -30,6 +30,11 @@ function App() {
           operation: null
         }
       case ACTIONS.SELECT_NUMBER:
+        if (state.number.replace('-', '').length >= 12) {
+          return {
+            ...state
+          }
+        }
         if (state.number !== '0') {
           return {
             ...state,
@@ -66,10 +71,12 @@ function App() {
       case ACTIONS.ROOT:
         if (parseFloat(state.number) >= 0) {
           return {
-            number: String(Math.sqrt(parseFloat(state.number)))
+            ...state,
+            number: String(Math.sqrt(parseFloat(state.number))).slice(0, 12)
           }
         }
         return {
+          ...state,
           number: '0',
           prevNumber: 'Error, cant get root of negative numbers'
         }
@@ -86,7 +93,7 @@ function App() {
       case ACTIONS.COMMA:
         return {
           ...state,
-          number: state.number.includes('.') ? state.number.replace('.', '') : state.number + '.'
+          number: state.number.includes('.') ? state.number.replace('.', '') : state.number.replace('-', '').length >= 12 ? state.number : state.number + '.'
         }
       case ACTIONS.CALCULATE:
         const x = parseFloat(state.prevNumber);
@@ -110,7 +117,7 @@ function App() {
                 number: '0'
               }
             }
-            result = String(x / y)
+            result = String(x / y).slice(0, 12);
             break
         }
 
@@ -119,24 +126,10 @@ function App() {
           operation: null,
           number: result
         }
-      case ACTIONS.CHECK_LENGTH:
-        if (state.number.includes('.') || state.number.length > 12 + parseInt(state.number.includes('-'))) {
-          return {
-            ...state,
-            number: state.number.slice(0, 11)
-          }
-        }
-        return {
-          ...state
-        }
     }
   }
 
   const[state, dispatch] = useReducer(calcReducer, INITIAL_STATE);
-
-  useEffect(() => {
-    dispatch({ type: ACTIONS.CHECK_LENGTH });
-  }, [state.number]);
 
 
   return (
