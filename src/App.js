@@ -117,8 +117,26 @@ function App() {
                 number: '0'
               }
             }
-            result = String(x / y).slice(0, 12);
+            result = String(x / y)
             break
+        }
+        
+        const [beforeComma, afterComma] = result.split('.');
+        if (result.replace('-', '').length >= 12) {
+          if (beforeComma.replace('-', '').length > 10) {
+            return {
+              prevNumber: null,
+              operation: null,
+              number: String(parseFloat(state.number).toExponential())
+            }
+          }
+          else {
+            return {
+              prevNumber: null,
+              operation: null,
+              number: beforeComma + '.' + afterComma.slice(0, 12 - beforeComma.length - 1)
+            }
+          }
         }
 
         return {
